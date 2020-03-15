@@ -4,6 +4,7 @@ import com.gupaoedu.vip.spring.formework.annotation.GPAutowried;
 import com.gupaoedu.vip.spring.formework.annotation.GPController;
 import com.gupaoedu.vip.spring.formework.annotation.GPService;
 import com.gupaoedu.vip.spring.formework.beans.GPBeanDefinition;
+import com.gupaoedu.vip.spring.formework.beans.GPBeanPostProcessor;
 import com.gupaoedu.vip.spring.formework.beans.GPBeanWrapper;
 import com.gupaoedu.vip.spring.formework.context.support.GPBeanDefinitionReader;
 import com.gupaoedu.vip.spring.formework.core.GPBeanFactory;
@@ -12,14 +13,12 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GPApplicationContext implements GPBeanFactory {
+public class GPApplicationContext extends GPDefaultListableBeanFactory implements GPBeanFactory {
 
     private GPBeanDefinitionReader reader;
 
     private String[] configLocations;
 
-    //ioc
-    private Map<String, GPBeanDefinition> beanDefinitionMap = new ConcurrentHashMap<String, GPBeanDefinition>();
 
     // 用来保证注册式单例
     private Map<String, Object> beanCacheMap = new HashMap<String, Object>();
@@ -150,17 +149,17 @@ public class GPApplicationContext implements GPBeanFactory {
         GPBeanDefinition beanDefinition = this.beanDefinitionMap.get(beanName);
         try {
             // 生产通知事件
-//            GPBeanPostProcessor beanPostProcessor = new GPBeanPostProcessor();
+            GPBeanPostProcessor beanPostProcessor = new GPBeanPostProcessor();
             // 实例化
             Object instantion = instantionBean(beanDefinition);
             if (null == instantion){ return null; }
             // 初始化前调用一次
-//            beanPostProcessor.postProcessBeforeInitialization(instantion, beanName);
+            beanPostProcessor.postProcessBeforeInitialization(instantion, beanName);
             GPBeanWrapper beanWrapper = new GPBeanWrapper(instantion);
-//            beanWrapper.setBeanPostProcessor(beanPostProcessor);
+            beanWrapper.setBeanPostProcessor(beanPostProcessor);
             this.beanWrapperMap.put(beanName, beanWrapper);
             // 初始化后调用一次
-//            beanPostProcessor.postProcessAfterInitialization(instantion,beanName);
+            beanPostProcessor.postProcessAfterInitialization(instantion,beanName);
 
 //            populateBean(beanName, instantion);
             return this.beanWrapperMap.get(beanName).getWrappedInstance();

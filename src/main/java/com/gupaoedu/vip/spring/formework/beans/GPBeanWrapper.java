@@ -1,8 +1,11 @@
 package com.gupaoedu.vip.spring.formework.beans;
 
+import com.gupaoedu.vip.spring.formework.aop.GPAopProxy;
 import com.gupaoedu.vip.spring.formework.core.GPFactoryBean;
 
 public class GPBeanWrapper extends GPFactoryBean {
+
+    private GPAopProxy aopProxy = new GPAopProxy();
 
     // 还会用到观察者模式 1事件监听
     private GPBeanPostProcessor beanPostProcessor;
@@ -11,8 +14,11 @@ public class GPBeanWrapper extends GPFactoryBean {
     private Object wrapperInstance;
     // 原对象
     private Object originaInstance;
+
     public GPBeanWrapper(Object instance){
-        this.wrapperInstance = instance;
+
+        // 从这里开始，把动态代理的代码添加进来
+        this.wrapperInstance = aopProxy.getProxy(instance);
         this.originaInstance = instance;
     }
 
