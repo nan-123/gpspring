@@ -3,13 +3,13 @@ package com.gupaoedu.vip.spring.formework.webmvc;
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 
-public class HandlerMapping {
+public class GPHandlerMapping {
 
     private  Object controller;
     private Method method;
     private Pattern pattern;
 
-    public HandlerMapping(Pattern pattern,Object controller, Method method) {
+    public GPHandlerMapping(Pattern pattern, Object controller, Method method) {
         this.controller = controller;
         this.method = method;
         this.pattern = pattern;

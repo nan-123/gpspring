@@ -1,6 +1,6 @@
 package com.gupaoedu.vip.spring.formework.context.support;
 
-import com.gupaoedu.vip.spring.formework.beans.BeanDefinition;
+import com.gupaoedu.vip.spring.formework.beans.GPBeanDefinition;
 
 import java.io.File;
 import java.io.InputStream;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Properties;
 
 // 用来对配置文件查找，读取，解析 == 定位
-public class BeanDefinitionReader {
+public class GPBeanDefinitionReader {
 
     private Properties config = new Properties();
 
@@ -18,7 +18,7 @@ public class BeanDefinitionReader {
 
     private  final  String SCAN_PACKGE = "scanPackage";
 
-    public BeanDefinitionReader(String ... locations){
+    public GPBeanDefinitionReader(String ... locations){
 
         // 在pring中是通过reader去查找和定位的
         // this.getClass().getClassLoader() ： 取到根目录开始的文件
@@ -46,9 +46,9 @@ public class BeanDefinitionReader {
     }
 
     //每注册一个className ,就返回一个BeanDefinition
-    public BeanDefinition registerBean(String className){
+    public GPBeanDefinition registerBean(String className){
         if (this.registyBeanClasses.contains(className)){
-            BeanDefinition beanDefinition = new BeanDefinition();
+            GPBeanDefinition beanDefinition = new GPBeanDefinition();
             beanDefinition.setBeanClassName(className);
             beanDefinition.setFactoryBeanName(lowerFirstCase(className.substring(className.lastIndexOf(".")+1)));
             return beanDefinition;

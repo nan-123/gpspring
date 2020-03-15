@@ -4,10 +4,10 @@ import com.gupaoedu.vip.spring.formework.annotation.GPController;
 import com.gupaoedu.vip.spring.formework.annotation.GPRequestMapping;
 import com.gupaoedu.vip.spring.formework.annotation.GPRequestParam;
 import com.gupaoedu.vip.spring.formework.context.GPApplicationContext;
+import com.gupaoedu.vip.spring.formework.webmvc.GPHandlerMapping;
 import com.gupaoedu.vip.spring.formework.webmvc.GPModelAndView;
-import com.gupaoedu.vip.spring.formework.webmvc.HandlerAdapter;
-import com.gupaoedu.vip.spring.formework.webmvc.HandlerMapping;
-import com.gupaoedu.vip.spring.formework.webmvc.ViewResolver;
+import com.gupaoedu.vip.spring.formework.webmvc.GPHandlerAdapter;
+import com.gupaoedu.vip.spring.formework.webmvc.GPViewResolver;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,19 +22,19 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DispatchcherServlet extends HttpServlet {
+public class GPDispatchcherServlet extends HttpServlet {
 
     private final String LOCATION = "contextConfigLocation";
 
-//    private Map<String, HandlerMapping> handlerMapping = new HashMap<String, HandlerMapping>();
+//    private Map<String, GPHandlerMapping> handlerMapping = new HashMap<String, GPHandlerMapping>();
 
 
     // 思考怎么给这个容器赋值 mvc的核心设计
-    private List<HandlerMapping> handlerMappings = new ArrayList<HandlerMapping>();
+    private List<GPHandlerMapping> handlerMappings = new ArrayList<GPHandlerMapping>();
 
-    private Map<HandlerMapping,HandlerAdapter> handlerAdapters = new HashMap<HandlerMapping, HandlerAdapter>();
+    private Map<GPHandlerMapping, GPHandlerAdapter> handlerAdapters = new HashMap<GPHandlerMapping, GPHandlerAdapter>();
 
-    private List<ViewResolver> viewResolvers = new ArrayList<ViewResolver>();
+    private List<GPViewResolver> viewResolvers = new ArrayList<GPViewResolver>();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -52,14 +52,14 @@ public class DispatchcherServlet extends HttpServlet {
     }
 
     private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception{
-            HandlerMapping handler =  getHandler(req);
+            GPHandlerMapping handler =  getHandler(req);
 
             if (handler == null){
                 resp.getWriter().write("<font size='25' color='red'> 404 NOT found @li.cn </font>");
             }
 
             // 因为handleradpter 的key是hadlermapping
-            HandlerAdapter ha = getHandlerAdapter(handler);
+            GPHandlerAdapter ha = getHandlerAdapter(handler);
 
             // 调用方法
         // 分；两块，1：排参数值，2：调用返回一个GPModelAndView
@@ -85,7 +85,7 @@ public class DispatchcherServlet extends HttpServlet {
 
         if (null == mv){return;}
         if (this.viewResolvers.isEmpty()){return;}
-        for (ViewResolver viewResolver : viewResolvers) {
+        for (GPViewResolver viewResolver : viewResolvers) {
 
             if (!mv.getViewName().equals(viewResolver.getViewName())){
                 continue;
@@ -101,13 +101,13 @@ public class DispatchcherServlet extends HttpServlet {
         // 调用resolveViewName
     }
 
-    private HandlerAdapter getHandlerAdapter(HandlerMapping handler) {
+    private GPHandlerAdapter getHandlerAdapter(GPHandlerMapping handler) {
         if (this.handlerAdapters.isEmpty()){return null;}
         return this.handlerAdapters.get(handler);
 
     }
 
-    private HandlerMapping getHandler(HttpServletRequest req) {
+    private GPHandlerMapping getHandler(HttpServletRequest req) {
 
         if (this.handlerMappings.isEmpty()){return null;}
 
@@ -118,7 +118,7 @@ public class DispatchcherServlet extends HttpServlet {
         String contextPath = req.getContextPath();
         url = url.replace(contextPath,"").replaceAll("/+", "/");
 
-        for (HandlerMapping handlerMapping : handlerMappings) {
+        for (GPHandlerMapping handlerMapping : handlerMappings) {
             Matcher matcher = handlerMapping.getPattern().matcher(url);
             if (!matcher.matches()){continue;}
             return handlerMapping;
@@ -166,7 +166,7 @@ public class DispatchcherServlet extends HttpServlet {
 
         for (File template : templateRootDir.listFiles()) {
 
-            this.viewResolvers.add(new ViewResolver(template.getName(),template));
+            this.viewResolvers.add(new GPViewResolver(template.getName(),template));
         }
 
     }
@@ -189,7 +189,7 @@ public class DispatchcherServlet extends HttpServlet {
 
          // 记录参数位置
 
-        for (HandlerMapping handlerMapping : handlerMappings) {
+        for (GPHandlerMapping handlerMapping : handlerMappings) {
             Map<String, Integer> paramMapping = new HashMap<String, Integer>();
 
             // 这个二维数组里面 参数名-类型 是一个元素
@@ -234,7 +234,7 @@ public class DispatchcherServlet extends HttpServlet {
                 }
             }
 
-            this.handlerAdapters.put(handlerMapping,new HandlerAdapter(paramMapping));
+            this.handlerAdapters.put(handlerMapping,new GPHandlerAdapter(paramMapping));
 
 
         }
@@ -276,7 +276,7 @@ public class DispatchcherServlet extends HttpServlet {
                 // Pattern.compile(regex); 从字符串中搜索符合的字符串
                 Pattern pattern = Pattern.compile(regex);
 
-                this.handlerMappings.add(new HandlerMapping(pattern,instance,method));
+                this.handlerMappings.add(new GPHandlerMapping(pattern,instance,method));
 
                 System.out.println("Mapping" + regex + "," + method);
             }

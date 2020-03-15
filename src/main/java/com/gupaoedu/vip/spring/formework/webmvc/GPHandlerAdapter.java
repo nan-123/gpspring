@@ -5,11 +5,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Map;
 
-public class HandlerAdapter {
+public class GPHandlerAdapter {
 
     private Map<String, Integer> paramMapping;
 
-    public HandlerAdapter(Map<String, Integer> paramMapping){
+    public GPHandlerAdapter(Map<String, Integer> paramMapping){
         this.paramMapping = paramMapping;
     }
     /**
@@ -19,7 +19,7 @@ public class HandlerAdapter {
      * @param handler 为什么要传handler ,因为这包含了url，方法 ，controller
      * @return
      */
-    public GPModelAndView handle(HttpServletRequest req, HttpServletResponse resp, HandlerMapping handler) throws Exception{
+    public GPModelAndView handle(HttpServletRequest req, HttpServletResponse resp, GPHandlerMapping handler) throws Exception{
         // 根据用户请求参数，跟方法中的参数进行动态匹配
         // resp 传进来只有一个目的：只是为了将其赋值给方法参数 resp不能new
 
