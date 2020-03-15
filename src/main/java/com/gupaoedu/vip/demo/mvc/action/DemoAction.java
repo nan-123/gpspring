@@ -28,7 +28,7 @@ public class DemoAction {
     }
 
     @RequestMapping("/first.html")
-    public GPModelAndView get(@RequestParam("teacher")String teacher){
+    public GPModelAndView getkk(@RequestParam("teacher")String teacher){
         String result = demoService.get(teacher);
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("teacher", teacher);

@@ -58,10 +58,14 @@ public class DispatchcherServlet extends HttpServlet {
                 resp.getWriter().write("<font size='25' color='red'> 404 NOT found @li.cn </font>");
             }
 
+            // 因为handleradpter 的key是hadlermapping
             HandlerAdapter ha = getHandlerAdapter(handler);
 
+            // 调用方法
+        // 分；两块，1：排参数值，2：调用返回一个GPModelAndView
             GPModelAndView mv =  ha.handle(req,resp,handler);
 
+            // 把GPModelAndView里面的内容替代 后 重新write输出
             processDispatchResult(resp, mv);
 
     }
@@ -108,6 +112,9 @@ public class DispatchcherServlet extends HttpServlet {
         if (this.handlerMappings.isEmpty()){return null;}
 
         String url = req.getRequestURI();
+//        比如你现在的URL是192.1.1.1:8080/my/index.jsp
+//        tomcat配置的当前项目访问地址是192.1.1.1:8080/my
+//        request.getContextPath（）得到的就是192.1.1.1:8080/my
         String contextPath = req.getContextPath();
         url = url.replace(contextPath,"").replaceAll("/+", "/");
 

@@ -57,6 +57,9 @@ public class HandlerAdapter {
         }
 
 
+        Object controller = handler.getController();
+        System.out.println(controller);
+        // 方法名.invoke(方法所在对象，方法参数)
         Object result = handler.getMethod().invoke(handler.getController(), paramValues);
         if (result == null){return null;}
         boolean isModelAndView = handler.getMethod().getReturnType() == GPModelAndView.class;
