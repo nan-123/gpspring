@@ -1,4 +1,4 @@
-package com.gupaoedu.vip.spring.core;
+package com.gupaoedu.vip.spring.formework.core;
 
 public interface BeanFactory {
 

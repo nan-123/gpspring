@@ -1,6 +1,6 @@
 package com.gupaoedu.vip.spring.demo.service.impl;
 
-import com.gupaoedu.vip.spring.annotation.GPService;
+import com.gupaoedu.vip.spring.formework.annotation.GPService;
 import com.gupaoedu.vip.spring.demo.service.IDemoService;
 
 @GPService

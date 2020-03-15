@@ -1,12 +1,12 @@
-package com.gupaoedu.vip.spring.context;
+package com.gupaoedu.vip.spring.formework.context;
 
-import com.gupaoedu.vip.spring.annotation.GPAutowried;
-import com.gupaoedu.vip.spring.annotation.GPController;
-import com.gupaoedu.vip.spring.annotation.GPService;
-import com.gupaoedu.vip.spring.beans.BeanDefinition;
-import com.gupaoedu.vip.spring.beans.BeanWrapper;
-import com.gupaoedu.vip.spring.context.support.BeanDefinitionReader;
-import com.gupaoedu.vip.spring.core.BeanFactory;
+import com.gupaoedu.vip.spring.formework.annotation.GPAutowried;
+import com.gupaoedu.vip.spring.formework.annotation.GPController;
+import com.gupaoedu.vip.spring.formework.annotation.GPService;
+import com.gupaoedu.vip.spring.formework.beans.BeanDefinition;
+import com.gupaoedu.vip.spring.formework.beans.BeanWrapper;
+import com.gupaoedu.vip.spring.formework.context.support.BeanDefinitionReader;
+import com.gupaoedu.vip.spring.formework.core.BeanFactory;
 
 import java.lang.reflect.Field;
 import java.util.*;

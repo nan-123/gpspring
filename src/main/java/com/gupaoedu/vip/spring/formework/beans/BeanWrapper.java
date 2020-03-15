@@ -1,6 +1,6 @@
-package com.gupaoedu.vip.spring.beans;
+package com.gupaoedu.vip.spring.formework.beans;
 
-import com.gupaoedu.vip.spring.core.FactoryBean;
+import com.gupaoedu.vip.spring.formework.core.FactoryBean;
 
 public class BeanWrapper extends FactoryBean {
 

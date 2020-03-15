@@ -1,4 +1,4 @@
-package com.gupaoedu.vip.spring.annotation;
+package com.gupaoedu.vip.spring.formework.annotation;
 
 import java.lang.annotation.*;
 

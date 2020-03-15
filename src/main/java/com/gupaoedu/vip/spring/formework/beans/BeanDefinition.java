@@ -1,4 +1,4 @@
-package com.gupaoedu.vip.spring.beans;
+package com.gupaoedu.vip.spring.formework.beans;
 
 // 存储配置文件中的信息 相当于保存在内存中的配置
 public class BeanDefinition {

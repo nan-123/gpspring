@@ -1,13 +1,13 @@
-package com.gupaoedu.vip.spring.webmvc.servlet;
+package com.gupaoedu.vip.spring.formework.webmvc.servlet;
 
-import com.gupaoedu.vip.spring.annotation.GPController;
-import com.gupaoedu.vip.spring.annotation.GPRequestMapping;
-import com.gupaoedu.vip.spring.annotation.GPRequestParam;
-import com.gupaoedu.vip.spring.context.GPApplicationContext;
-import com.gupaoedu.vip.spring.webmvc.GPModelAndView;
-import com.gupaoedu.vip.spring.webmvc.HandlerAdapter;
-import com.gupaoedu.vip.spring.webmvc.HandlerMapping;
-import com.gupaoedu.vip.spring.webmvc.ViewResolver;
+import com.gupaoedu.vip.spring.formework.annotation.GPController;
+import com.gupaoedu.vip.spring.formework.annotation.GPRequestMapping;
+import com.gupaoedu.vip.spring.formework.annotation.GPRequestParam;
+import com.gupaoedu.vip.spring.formework.context.GPApplicationContext;
+import com.gupaoedu.vip.spring.formework.webmvc.GPModelAndView;
+import com.gupaoedu.vip.spring.formework.webmvc.HandlerAdapter;
+import com.gupaoedu.vip.spring.formework.webmvc.HandlerMapping;
+import com.gupaoedu.vip.spring.formework.webmvc.ViewResolver;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

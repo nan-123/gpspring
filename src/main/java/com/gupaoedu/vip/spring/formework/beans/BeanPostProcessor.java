@@ -1,4 +1,4 @@
-package com.gupaoedu.vip.spring.beans;
+package com.gupaoedu.vip.spring.formework.beans;
 
 // 用于做事件监听
 public class BeanPostProcessor {
