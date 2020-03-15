@@ -7,7 +7,7 @@
 
 	<servlet>
 		<servlet-name>gupaomvc</servlet-name>
-		<servlet-class>com.gupaoedu.vip.spring.formework.webmvc.servlet.DispatchcherServlet</servlet-class>
+		<servlet-class>com.gupaoedu.vip.spring.webmvc.servlet.DispatchcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:application.properties</param-value>

@@ -1,4 +1,4 @@
-package com.gupaoedu.vip.spring.formework.webmvc;
+package com.gupaoedu.vip.spring.webmvc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,34 +1,34 @@
-package com.gupaoedu.vip.demo.mvc.action;
+package com.gupaoedu.vip.spring.demo.action;
 
-import com.gupaoedu.vip.demo.mvc.service.IDemoService;
-import com.gupaoedu.vip.spring.annotation.Autowried;
-import com.gupaoedu.vip.spring.annotation.Controller;
-import com.gupaoedu.vip.spring.annotation.RequestMapping;
-import com.gupaoedu.vip.spring.annotation.RequestParam;
-import com.gupaoedu.vip.spring.formework.webmvc.GPModelAndView;
+import com.gupaoedu.vip.spring.annotation.GPController;
+import com.gupaoedu.vip.spring.demo.service.IDemoService;
+import com.gupaoedu.vip.spring.annotation.GPAutowried;
+import com.gupaoedu.vip.spring.annotation.GPRequestMapping;
+import com.gupaoedu.vip.spring.annotation.GPRequestParam;
+import com.gupaoedu.vip.spring.webmvc.GPModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
-@RequestMapping("/demo")
+@GPController
+@GPRequestMapping("/demo")
 public class DemoAction {
-    @Autowried
+    @GPAutowried
     private IDemoService demoService;
 
-    @RequestMapping("query.json")
+    @GPRequestMapping("query.json")
     public void query(HttpServletRequest req, HttpServletResponse resp,
-                      @RequestParam("name")String name) throws Exception{
+                      @GPRequestParam("name")String name) throws Exception{
 
         String result = demoService.get(name);
         resp.getWriter().write(result);
 
     }
 
-    @RequestMapping("/first.html")
-    public GPModelAndView getkk(@RequestParam("teacher")String teacher){
+    @GPRequestMapping("/first.html")
+    public GPModelAndView getkk(@GPRequestParam("teacher")String teacher){
         String result = demoService.get(teacher);
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("teacher", teacher);

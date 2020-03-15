@@ -1,12 +1,12 @@
-package com.gupaoedu.vip.spring.formework.context;
+package com.gupaoedu.vip.spring.context;
 
-import com.gupaoedu.vip.spring.annotation.Autowried;
-import com.gupaoedu.vip.spring.annotation.Controller;
-import com.gupaoedu.vip.spring.annotation.Service;
-import com.gupaoedu.vip.spring.formework.beans.BeanDefinition;
-import com.gupaoedu.vip.spring.formework.beans.BeanWrapper;
-import com.gupaoedu.vip.spring.formework.context.support.BeanDefinitionReader;
-import com.gupaoedu.vip.spring.formework.core.BeanFactory;
+import com.gupaoedu.vip.spring.annotation.GPAutowried;
+import com.gupaoedu.vip.spring.annotation.GPController;
+import com.gupaoedu.vip.spring.annotation.GPService;
+import com.gupaoedu.vip.spring.beans.BeanDefinition;
+import com.gupaoedu.vip.spring.beans.BeanWrapper;
+import com.gupaoedu.vip.spring.context.support.BeanDefinitionReader;
+import com.gupaoedu.vip.spring.core.BeanFactory;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -76,16 +76,16 @@ public class GPApplicationContext implements BeanFactory {
 
     public void populateBean(String beanName, Object instance){
         Class<?> clazz = instance.getClass();
-        if (!(clazz.isAnnotationPresent(Controller.class) || clazz.isAnnotationPresent(Service.class))){
+        if (!(clazz.isAnnotationPresent(GPController.class) || clazz.isAnnotationPresent(GPService.class))){
             return;
         }
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            if (!field.isAnnotationPresent(Autowried.class)){
+            if (!field.isAnnotationPresent(GPAutowried.class)){
                 continue;
             }
 
-            Autowried autowried = field.getAnnotation(Autowried.class);
+            GPAutowried autowried = field.getAnnotation(GPAutowried.class);
             String autowireName = autowried.value().trim();
             if ("".equals(autowireName)){
                 autowireName = field.getType().getName();

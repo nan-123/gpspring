@@ -1,6 +1,6 @@
-package com.gupaoedu.vip.spring.formework.context.support;
+package com.gupaoedu.vip.spring.context.support;
 
-import com.gupaoedu.vip.spring.formework.beans.BeanDefinition;
+import com.gupaoedu.vip.spring.beans.BeanDefinition;
 
 import java.io.File;
 import java.io.InputStream;

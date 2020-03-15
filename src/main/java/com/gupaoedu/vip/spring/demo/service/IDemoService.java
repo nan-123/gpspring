@@ -1,4 +1,4 @@
-package com.gupaoedu.vip.demo.mvc.service;
+package com.gupaoedu.vip.spring.demo.service;
 
 public interface IDemoService {
 

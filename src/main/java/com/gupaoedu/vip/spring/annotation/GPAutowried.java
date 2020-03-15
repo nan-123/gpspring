@@ -2,9 +2,9 @@ package com.gupaoedu.vip.spring.annotation;
 
 import java.lang.annotation.*;
 
-@Target({ElementType.PARAMETER})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RequestParam {
+public @interface GPAutowried {
     String value()default "";
 }

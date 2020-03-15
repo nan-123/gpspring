@@ -1,13 +1,13 @@
-package com.gupaoedu.vip.spring.formework.webmvc.servlet;
+package com.gupaoedu.vip.spring.webmvc.servlet;
 
-import com.gupaoedu.vip.spring.annotation.Controller;
-import com.gupaoedu.vip.spring.annotation.RequestMapping;
-import com.gupaoedu.vip.spring.annotation.RequestParam;
-import com.gupaoedu.vip.spring.formework.context.GPApplicationContext;
-import com.gupaoedu.vip.spring.formework.webmvc.GPModelAndView;
-import com.gupaoedu.vip.spring.formework.webmvc.HandlerAdapter;
-import com.gupaoedu.vip.spring.formework.webmvc.HandlerMapping;
-import com.gupaoedu.vip.spring.formework.webmvc.ViewResolver;
+import com.gupaoedu.vip.spring.annotation.GPController;
+import com.gupaoedu.vip.spring.annotation.GPRequestMapping;
+import com.gupaoedu.vip.spring.annotation.GPRequestParam;
+import com.gupaoedu.vip.spring.context.GPApplicationContext;
+import com.gupaoedu.vip.spring.webmvc.GPModelAndView;
+import com.gupaoedu.vip.spring.webmvc.HandlerAdapter;
+import com.gupaoedu.vip.spring.webmvc.HandlerMapping;
+import com.gupaoedu.vip.spring.webmvc.ViewResolver;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -209,8 +209,8 @@ public class DispatchcherServlet extends HttpServlet {
             for (int i = 0; i < parameterAnnotations.length ; i ++) {
                 for (Annotation a : parameterAnnotations[i]) {
 
-                    if (a instanceof RequestParam){
-                        String paramName = ((RequestParam) a).value();
+                    if (a instanceof GPRequestParam){
+                        String paramName = ((GPRequestParam) a).value();
 
                         if (!"".equals(paramName.trim())){
                             paramMapping.put(paramName, i);
@@ -256,22 +256,22 @@ public class DispatchcherServlet extends HttpServlet {
             Object instance = context.getBean(beanName);
             Class<?> clazz = instance.getClass();
             // 过滤没有controller 注解的
-            if (!clazz.isAnnotationPresent(Controller.class)){continue;}
+            if (!clazz.isAnnotationPresent(GPController.class)){continue;}
 
             String baseUrl = "";
 
-            if (clazz.isAnnotationPresent(RequestMapping.class)){
-                RequestMapping requestMapping = clazz.getAnnotation(RequestMapping.class);
-                baseUrl = requestMapping.value();
+            if (clazz.isAnnotationPresent(GPRequestMapping.class)){
+                GPRequestMapping GPRequestMapping = clazz.getAnnotation(GPRequestMapping.class);
+                baseUrl = GPRequestMapping.value();
             }
 
             // 扫描方法
             Method[] methods = clazz.getMethods();
             for (Method method : methods) {
-                if (!method.isAnnotationPresent(RequestMapping.class)){continue;}
+                if (!method.isAnnotationPresent(GPRequestMapping.class)){continue;}
 
-                RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-                String regex = (baseUrl + requestMapping.value().replaceAll("/+","/"));
+                GPRequestMapping GPRequestMapping = method.getAnnotation(GPRequestMapping.class);
+                String regex = (baseUrl + GPRequestMapping.value().replaceAll("/+","/"));
 
                 // Pattern.compile(regex); 从字符串中搜索符合的字符串
                 Pattern pattern = Pattern.compile(regex);
