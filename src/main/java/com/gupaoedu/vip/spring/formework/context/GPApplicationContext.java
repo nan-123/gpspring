@@ -3,6 +3,7 @@ package com.gupaoedu.vip.spring.formework.context;
 import com.gupaoedu.vip.spring.formework.annotation.GPAutowried;
 import com.gupaoedu.vip.spring.formework.annotation.GPController;
 import com.gupaoedu.vip.spring.formework.annotation.GPService;
+import com.gupaoedu.vip.spring.formework.aop.GPAopConfig;
 import com.gupaoedu.vip.spring.formework.beans.GPBeanDefinition;
 import com.gupaoedu.vip.spring.formework.beans.GPBeanPostProcessor;
 import com.gupaoedu.vip.spring.formework.beans.GPBeanWrapper;
@@ -10,8 +11,11 @@ import com.gupaoedu.vip.spring.formework.context.support.GPBeanDefinitionReader;
 import com.gupaoedu.vip.spring.formework.core.GPBeanFactory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GPApplicationContext extends GPDefaultListableBeanFactory implements GPBeanFactory {
 
@@ -62,13 +66,14 @@ public class GPApplicationContext extends GPDefaultListableBeanFactory implement
         for (Map.Entry<String, GPBeanDefinition> beanDefinitionEntry : entries) {
             String beanName = beanDefinitionEntry.getKey();
             if (!beanDefinitionEntry.getValue().isLazyInit()){
-                getBean(beanName);
+                Object bean = getBean(beanName);
+                System.out.println(bean);
             }
         }
 
         Set<Map.Entry<String, GPBeanWrapper>> entries1 = this.beanWrapperMap.entrySet();
         for (Map.Entry<String, GPBeanWrapper> entry : entries1) {
-            populateBean(entry.getKey(), entry.getValue().getWrappedInstance());
+            populateBean(entry.getKey(), entry.getValue().getOriginaInstance());
         }
 
     }
@@ -145,6 +150,7 @@ public class GPApplicationContext extends GPDefaultListableBeanFactory implement
     //通过读取BeanDefinition 中的信息
     // 然后反射，创建实例返回
     //spring中会再封装成beanWrapper 不会直接放BeanDefinition（aop）
+    // 但这里有个问题，返回值变成了代理对象
     public Object getBean(String beanName) {
         GPBeanDefinition beanDefinition = this.beanDefinitionMap.get(beanName);
         try {
@@ -155,7 +161,12 @@ public class GPApplicationContext extends GPDefaultListableBeanFactory implement
             if (null == instantion){ return null; }
             // 初始化前调用一次
             beanPostProcessor.postProcessBeforeInitialization(instantion, beanName);
+            // 代理类怎么来的？
+            // 第一步： 这里在创建GPBeanWrapper实例的时候把原始对象传了进去
+            // 第二步： 在GPBeanWrapper的构造方法中调用了实例化代理类的方法
+            //  this.wrapperInstance = aopProxy.getProxy(instance);
             GPBeanWrapper beanWrapper = new GPBeanWrapper(instantion);
+            beanWrapper.setAopConfig(instantionAopconfig(beanDefinition));
             beanWrapper.setBeanPostProcessor(beanPostProcessor);
             this.beanWrapperMap.put(beanName, beanWrapper);
             // 初始化后调用一次
@@ -203,5 +214,36 @@ public class GPApplicationContext extends GPDefaultListableBeanFactory implement
 
     public Properties getconfig(){
          return this.reader.getConfig();
+    }
+
+    // 这里的代码其实很好理解
+    // 就是获取aop配置文件里面的配置
+    // 把传进来的ioc里面beanDefinition进行一次校验，符合规则的话就封装一个GPAopConfig 返回出去 然后beanWrapper对象再存起来
+    private GPAopConfig instantionAopconfig(GPBeanDefinition beanDefinition) throws Exception{
+
+        GPAopConfig config = new GPAopConfig();
+        String expression = reader.getConfig().getProperty("pointCut");
+        String[] before = reader.getConfig().getProperty("aspecrBefore").split("\\s");
+        String[] after = reader.getConfig().getProperty("aspecrAfter").split("\\s");
+        
+        String className = beanDefinition.getBeanClassName();
+        Class<?> clazz = Class.forName(className);
+
+        Pattern pattern = Pattern.compile(expression);
+
+        Class<?> aspectClass = Class.forName(before[0]);
+        for (Method method : clazz.getMethods()) {
+
+            // 这里的methed : pubilic com.xx.xx.xx.service.xxx.方法名
+            // 就可以跟pointCut：public .* com\.gupaoedu\.vip\.spring\.demo\.service\..*Service\..*\(.*\) 匹配了
+            Matcher matcher = pattern.matcher(method.toString());
+            if (matcher.matches()){ // 能匹配的话
+                // 这里是把能匹配的方法 -- aop类，aop方法 封装进来  config：aop内容对象
+                config.put(method, aspectClass.newInstance(), new Method[]{aspectClass.getMethod(before[1]),aspectClass.getMethod(after[1])});
+
+            }
+        }
+
+        return config;
     }
 }

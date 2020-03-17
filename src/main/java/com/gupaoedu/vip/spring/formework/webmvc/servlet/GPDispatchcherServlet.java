@@ -3,6 +3,7 @@ package com.gupaoedu.vip.spring.formework.webmvc.servlet;
 import com.gupaoedu.vip.spring.formework.annotation.GPController;
 import com.gupaoedu.vip.spring.formework.annotation.GPRequestMapping;
 import com.gupaoedu.vip.spring.formework.annotation.GPRequestParam;
+import com.gupaoedu.vip.spring.formework.aop.GPAopProxyUtils;
 import com.gupaoedu.vip.spring.formework.context.GPApplicationContext;
 import com.gupaoedu.vip.spring.formework.webmvc.GPHandlerMapping;
 import com.gupaoedu.vip.spring.formework.webmvc.GPModelAndView;
@@ -246,40 +247,45 @@ public class GPDispatchcherServlet extends HttpServlet {
 
     // 需要实现
     // 用来保存controller 中配置的requsttmapping 和method 的一个对应关系
-    private void initHandlerMappings(GPApplicationContext context) {
+    private void initHandlerMappings(GPApplicationContext context)  {
         // 猜测这里是给handlerMappings赋值的，一个方法一个对象
 
 
-        // 先从容器中获取所有实例
-        String[] beanDefinitionNames = context.getBeanDefinitionNames();
-        for (String beanName : beanDefinitionNames) {
-            Object instance = context.getBean(beanName);
-            Class<?> clazz = instance.getClass();
-            // 过滤没有controller 注解的
-            if (!clazz.isAnnotationPresent(GPController.class)){continue;}
+        try {
+            // 先从容器中获取所有实例
+            String[] beanDefinitionNames = context.getBeanDefinitionNames();
+            for (String beanName : beanDefinitionNames) {
+                Object proxy = context.getBean(beanName);
+                Object controller = GPAopProxyUtils.getTargetObjet(proxy);
+                Class<?> clazz = controller.getClass();
+                // 过滤没有controller 注解的
+                if (!clazz.isAnnotationPresent(GPController.class)){continue;}
 
-            String baseUrl = "";
+                String baseUrl = "";
 
-            if (clazz.isAnnotationPresent(GPRequestMapping.class)){
-                GPRequestMapping GPRequestMapping = clazz.getAnnotation(GPRequestMapping.class);
-                baseUrl = GPRequestMapping.value();
+                if (clazz.isAnnotationPresent(GPRequestMapping.class)){
+                    GPRequestMapping GPRequestMapping = clazz.getAnnotation(GPRequestMapping.class);
+                    baseUrl = GPRequestMapping.value();
+                }
+
+                // 扫描方法
+                Method[] methods = clazz.getMethods();
+                for (Method method : methods) {
+                    if (!method.isAnnotationPresent(GPRequestMapping.class)){continue;}
+
+                    GPRequestMapping GPRequestMapping = method.getAnnotation(GPRequestMapping.class);
+                    String regex = (baseUrl + GPRequestMapping.value().replaceAll("/+","/"));
+
+                    // Pattern.compile(regex); 从字符串中搜索符合的字符串
+                    Pattern pattern = Pattern.compile(regex);
+
+                    this.handlerMappings.add(new GPHandlerMapping(pattern,controller,method));
+
+                    System.out.println("Mapping" + regex + "," + method);
+                }
             }
-
-            // 扫描方法
-            Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                if (!method.isAnnotationPresent(GPRequestMapping.class)){continue;}
-
-                GPRequestMapping GPRequestMapping = method.getAnnotation(GPRequestMapping.class);
-                String regex = (baseUrl + GPRequestMapping.value().replaceAll("/+","/"));
-
-                // Pattern.compile(regex); 从字符串中搜索符合的字符串
-                Pattern pattern = Pattern.compile(regex);
-
-                this.handlerMappings.add(new GPHandlerMapping(pattern,instance,method));
-
-                System.out.println("Mapping" + regex + "," + method);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 

@@ -1,5 +1,6 @@
 package com.gupaoedu.vip.spring.formework.beans;
 
+import com.gupaoedu.vip.spring.formework.aop.GPAopConfig;
 import com.gupaoedu.vip.spring.formework.aop.GPAopProxy;
 import com.gupaoedu.vip.spring.formework.core.GPFactoryBean;
 
@@ -37,5 +38,17 @@ public class GPBeanWrapper extends GPFactoryBean {
 
     public void setBeanPostProcessor(GPBeanPostProcessor beanPostProcessor) {
         this.beanPostProcessor = beanPostProcessor;
+    }
+
+    public void setAopConfig(GPAopConfig config){
+        aopProxy.setConfig(config);
+    }
+
+    public Object getOriginaInstance() {
+        return originaInstance;
+    }
+
+    public void setOriginaInstance(Object originaInstance) {
+        this.originaInstance = originaInstance;
     }
 }
