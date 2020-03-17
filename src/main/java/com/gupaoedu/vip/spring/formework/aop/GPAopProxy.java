@@ -36,9 +36,11 @@ public class GPAopProxy implements InvocationHandler {
 
     // 所有被spring管理的对象方法调用都会在这里，会判断是否需要走aop
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+        Method m = this.target.getClass().getMethod(method.getName(), method.getParameterTypes());
         // 在原始方法调用前
-        if (config.contains(method)){
-            GPAopConfig.GPAspect aspect = config.get(method);
+        if (config.contains(m)){
+            GPAopConfig.GPAspect aspect = config.get(m);
             // 因为是简化的，before方法没有参数
             aspect.getPoints()[0].invoke(aspect.getAspect());
         }
@@ -46,8 +48,8 @@ public class GPAopProxy implements InvocationHandler {
         // 这里才是真正调用方法
         Object obj = method.invoke(this.target, args);
 
-        if (config.contains(method)){
-            GPAopConfig.GPAspect aspect = config.get(method);
+        if (config.contains(m)){
+            GPAopConfig.GPAspect aspect = config.get(m);
             aspect.getPoints()[1].invoke(aspect.getAspect());
         }
         return obj;
