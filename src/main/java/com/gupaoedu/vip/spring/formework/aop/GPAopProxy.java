@@ -16,6 +16,7 @@ public class GPAopProxy implements InvocationHandler {
 
     private GPAopConfig config;
 
+    // 原对象
     private Object target;
 
 
@@ -35,6 +36,7 @@ public class GPAopProxy implements InvocationHandler {
     }
 
     // 所有被spring管理的对象方法调用都会在这里，会判断是否需要走aop
+    // 只有当代理对象方法被调用时才会走这里的方法
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         Method m = this.target.getClass().getMethod(method.getName(), method.getParameterTypes());
@@ -54,4 +56,6 @@ public class GPAopProxy implements InvocationHandler {
         }
         return obj;
     }
+
+    // 注入到service里面的是代理对象，在调用这些代理对象的方法的时候就会自动跑到invoke里面来
 }

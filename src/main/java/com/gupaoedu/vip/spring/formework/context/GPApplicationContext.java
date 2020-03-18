@@ -151,6 +151,13 @@ public class GPApplicationContext extends GPDefaultListableBeanFactory implement
     // 然后反射，创建实例返回
     //spring中会再封装成beanWrapper 不会直接放BeanDefinition（aop）
     // 但这里有个问题，返回值变成了代理对象
+    // aop就是在getbean的时候做的，包括了1：传原对象给GPBeanWrapper 封装出代理对象 obj---调aopproxy的getProxy 得到代理对象 --- 再保存在GPBeanWrapper的一个属性，后面这个代理对象再注入到service中，然后执行的时候就触发了aop，如果是规则配置的方法就会跑aop
+    // 方法，否则就直接调用 ； 还有一个很阴的地方就是 GPBeanWrapper  保存的aop配置 ，调用instantionAopconfig方法把beanDefinition放进去 校验是否符合aop，符合就保存在GPBeanWrapper的一个字段
+    // 还有GPAopConfig内部保存了一个map<需要增强的方法名-{增强类，增强类的方法}> 集合，收集了所有符合aop配置的方法，
+
+    // 总结：aop增强类信息（GPAspect：logaspet；before（），after（））--》 被 GPAopConfig （Map<需要增强的方法,GPAspect>）包含  ----》被GPAopProxy 包含（gPAopConfig ，原对象） --- 》 被GPBeanWrapper（GPAopProxy aopProxy， 原对象，代理对象） 包含
+    // 所以就很清晰了，首先是GPBeanWrapper 作为入口，得到代理对象，  GPBeanWrapper把得到的GPAopConfig 传给 aopProxy ， 同时配置好了GPAopConfig的map集合 ，就是调用put的时候，同时调用put的时候把 增强类信息（logaspet；before（），after（））
+    // 读出来作为参数，put方法内部构件出了GPAspect对象
     public Object getBean(String beanName) {
         GPBeanDefinition beanDefinition = this.beanDefinitionMap.get(beanName);
         try {
